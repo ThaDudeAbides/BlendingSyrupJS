@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OpenCV.js</title>
+</head>
+<body>
+    <div style="border: thin solid rgb(0, 0, 0);">
+ 
+        <center>
+            <h2>OpenCV.js Magic box :)</h2>
+            <p id="status">OpenCV.js status: Loading...</p>
+            <div>
+                <div class="row-align">
+                    <img id="imageSrc" style="border: none;" width=500/>
+                    <canvas id="canvasOutput" width="500"></canvas>
+                    <br/>
+                    <canvas id="canvas2Output" width="500"></canvas>
+                    <canvas id="canvas3Output" width="500"></canvas>
+                    <br/>
+                </div>
+     
+                <input type="file" id="fileInput" name="file" />
+            </div>
+        </center>
+     
+        <script type="text/javascript">
+            
+            let imgElement = document.getElementById('imageSrc');
+            let inputElement = document.getElementById('fileInput');
+            
+            inputElement.addEventListener('change', (e) => {
+                imgElement.src = URL.createObjectURL(e.target.files[0]);
+            }, false);
+
+            imgElement.onload = function () {
+                let mat = cv.imread(imgElement);
+                let mat_gs = new cv.Mat();
+                let mat_edges = new cv.Mat();
+                cv.cvtColor(mat, mat_gs, cv.COLOR_RGB2GRAY, 0);
+                cv.Canny(mat_gs, mat_edges, 50, 100, 3, false);
+                cv.imshow('canvasOutput', mat_edges);
+                cv.imshow('canvas2Output', mat_gs);
+                mat.delete();
+            };
+            
+            function onOpenCvReady() {
+                document.getElementById('status').innerHTML = 'OpenCV.js status: Ready.';
+            }
+
+        </script>
+
+        <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+
+    </div>
+
+</body>
+</html>
